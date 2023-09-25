@@ -12,7 +12,7 @@ from importer.StrategyImporter import StrategyImporter
 GAMES = 20000
 SHOE_SIZE = 6
 SHOE_PENETRATION = 0.25
-BET_SPREAD = 20.0
+BET_SPREAD = 1
 
 DECK_SIZE = 52.0
 CARDS = {"Ace": 11, "Two": 2, "Three": 3, "Four": 4, "Five": 5, "Six": 6, "Seven": 7, "Eight": 8, "Nine": 9, "Ten": 10, "Jack": 10, "Queen": 10, "King": 10}
@@ -280,6 +280,7 @@ class Player(object):
                     hand.doubled = True
                     self.hit(hand, shoe)
                     break
+
                 else:
                     flag = 'H'
 
@@ -481,17 +482,23 @@ if __name__ == "__main__":
     for value in bets:
         total_bet += value
 
-    print "\n%d hands overall, %0.2f hands per game on average" % (nb_hands, float(nb_hands) / GAMES)
-    print "%0.2f total bet" % total_bet
+    print("\n%d hands overall, %0.2f hands per game on average" % (nb_hands, float(nb_hands) / GAMES))
+    print("%0.2f total bet" % total_bet)
     print("Overall winnings: {} (edge = {} %)".format("{0:.2f}".format(sume), "{0:.3f}".format(100.0*sume/total_bet)))
 
     moneys = sorted(moneys)
     fit = stats.norm.pdf(moneys, np.mean(moneys), np.std(moneys))  # this is a fitting indeed
     pl.plot(moneys, fit, '-o')
-    pl.hist(moneys, normed=True)
+    hist, bin_edges, _ = pl.hist(moneys, density=True, ec="black")
+    plt.xlabel('Nombre de mains gagnantes - nombre de mains perdantes par jeu')
+    plt.ylabel('Densité de probabilité')
+
+
+    plt.axvline(x=0, color='red', linestyle='--')
     pl.show()
 
-    plt.ylabel('count')
-    plt.plot(countings, label='x')
-    plt.legend()
-    plt.show()
+    #plt.ylabel('count')
+    #plt.plot(countings, label='x')
+    #plt.legend()
+    #plt.show()
+
